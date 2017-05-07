@@ -22,7 +22,7 @@ void UDoorOpener::BeginPlay()
 
 	FRotator initialRot = GetOwner()->GetActorRotation();
 	
-	GetOwner()->SetActorRotation(initialRot.Add(0.0f, 90.0f, 0.0f));
+	GetOwner()->SetActorRotation(initialRot.Add(0.0f, openAngle, 0.0f));
 }
 
 
