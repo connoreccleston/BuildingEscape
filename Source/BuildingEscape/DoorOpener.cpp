@@ -20,17 +20,21 @@ void UDoorOpener::BeginPlay()
 {
 	Super::BeginPlay();
 
-	FRotator initialRot = GetOwner()->GetActorRotation();
-	
-	GetOwner()->SetActorRotation(initialRot.Add(0.0f, openAngle, 0.0f));
-}
+	whoOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 
+	closeRot = GetOwner()->GetActorRotation();
+	openRot = GetOwner()->GetActorRotation().Add(0.0f, openAngle, 0.0f);
+}
 
 // Called every frame
 void UDoorOpener::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	if(pressurePlate->IsOverlappingActor(whoOpens))
+		GetOwner()->SetActorRotation(openRot);
+
+	if(!pressurePlate->IsOverlappingActor(whoOpens))
+		GetOwner()->SetActorRotation(closeRot);
 }
 

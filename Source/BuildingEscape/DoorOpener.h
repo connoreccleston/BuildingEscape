@@ -29,4 +29,10 @@ private:
 	
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* pressurePlate;
+
+	//UPROPERTY(EditAnywhere)
+	AActor* whoOpens;
+
+	FRotator closeRot;
+	FRotator openRot;
 };
