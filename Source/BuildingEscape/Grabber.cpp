@@ -10,8 +10,6 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -19,8 +17,6 @@ UGrabber::UGrabber()
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
-
-	UE_LOG(LogTemp, Warning, TEXT("Grabber Begin Play"));
 	
 	// look for physics handle
 	physHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
@@ -32,6 +28,7 @@ void UGrabber::BeginPlay()
 	if (inputComponent)
 	{
 		inputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+		inputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 	else
 	{
@@ -39,36 +36,30 @@ void UGrabber::BeginPlay()
 	}
 }
 
-void UGrabber::Grab()
-{
-	UE_LOG(LogTemp, Warning, TEXT("grabby grabby"));
-}
-
 // Called every frame
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
+void UGrabber::Grab()
+{
+	GetGrabbableObject();
+}
+
+void UGrabber::Release()
+{
+}
+
+AActor* UGrabber::GetGrabbableObject()
+{
 	// get play view point
 	FVector outLocation;
 	FRotator outRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(outLocation, outRotation);
-	//UE_LOG(LogTemp, Warning, TEXT("%s %s"), *outLocation.ToString(), *outRotation.ToString());
 
 	// ray cast to set reach distance
 	FVector lineTraceEnd = outLocation + outRotation.Vector() * reach;
-
-	DrawDebugLine
-	(
-		GetWorld(),
-		outLocation,
-		lineTraceEnd,
-		FColor(255, 0, 0),
-		false,
-		0.0f,
-		0.0f,
-		10.0f
-	);
 
 	// setup query params
 	FCollisionQueryParams traceParams(FName(TEXT("")), false, GetOwner());
@@ -84,9 +75,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	);
 
 	AActor* hitActor = outHit.GetActor();
-	if (hitActor)
-		UE_LOG(LogTemp, Warning, TEXT("Hit %s"), *(hitActor->GetName()));
 
-	// see what we hit
+	return hitActor;
 }
-

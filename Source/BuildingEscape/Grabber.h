@@ -31,4 +31,7 @@ private:
 	UInputComponent* inputComponent = nullptr;
 	
 	void Grab();
+	void Release();
+
+	AActor* GetGrabbableObject();
 };
