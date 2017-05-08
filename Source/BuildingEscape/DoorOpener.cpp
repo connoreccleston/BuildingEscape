@@ -20,7 +20,7 @@ void UDoorOpener::BeginPlay()
 {
 	Super::BeginPlay();
 
-	whoOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	//whoOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
 
 	closeRot = GetOwner()->GetActorRotation();
 	openRot = GetOwner()->GetActorRotation().Add(0.0f, openAngle, 0.0f);
@@ -31,7 +31,7 @@ void UDoorOpener::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (pressurePlate->IsOverlappingActor(whoOpens))
+	if (TotalMass() >= massThreshold)
 	{
 		GetOwner()->SetActorRotation(openRot);
 		lastOpenTime = GetWorld()->GetTimeSeconds();
@@ -46,3 +46,17 @@ void UDoorOpener::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	//	GetOwner()->SetActorRotation(closeRot);
 }
 
+float UDoorOpener::TotalMass()
+{
+	float totalMass = 0.0f;
+
+	// find all overlapping actors, add their masses
+
+	TArray<AActor*> overlappingActors;
+	pressurePlate->GetOverlappingActors(overlappingActors);
+
+	for (const auto* actor : overlappingActors)
+		totalMass += actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+
+	return totalMass;
+}

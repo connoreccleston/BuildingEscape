@@ -33,11 +33,13 @@ private:
 	UPROPERTY(EditAnywhere)
 	float closeDelay = 1.0f;
 
-	//UPROPERTY(EditAnywhere)
-	AActor* whoOpens;
+	UPROPERTY(EditAnywhere)
+	float massThreshold = 100.0f;
 
 	float lastOpenTime;
 
 	FRotator closeRot;
 	FRotator openRot;
+
+	float TotalMass();
 };
