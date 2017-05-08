@@ -40,20 +40,46 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+
+	// if phys handle is attached, move the thing we're holding
+	if (physHandle->GrabbedComponent)
+	{
+		FVector outLocation;
+		FRotator outRotation;
+		GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(outLocation, outRotation);
+		FVector lineTraceEnd = outLocation + outRotation.Vector() * reach;
+
+		physHandle->SetTargetLocation(lineTraceEnd);
+	}
 }
 
 void UGrabber::Grab()
 {
-	GetGrabbableObject();
+	FHitResult hitRes = GetGrabbableObject();
+	UPrimitiveComponent* compToGrab = hitRes.GetComponent();
+	AActor* hitActor = hitRes.GetActor();
+
+	// if we hit something, attach phys handle
+	if (hitActor)
+	{
+		physHandle->GrabComponentAtLocationWithRotation // deprecated but it looks better
+		(
+			compToGrab,
+			NAME_None,
+			compToGrab->GetOwner()->GetActorLocation(),
+			compToGrab->GetOwner()->GetActorRotation()
+		);
+	}
 }
 
 void UGrabber::Release()
 {
+	physHandle->ReleaseComponent();
 }
 
-AActor* UGrabber::GetGrabbableObject()
+FHitResult UGrabber::GetGrabbableObject()
 {
-	// get play view point
+	// get player view point
 	FVector outLocation;
 	FRotator outRotation;
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(outLocation, outRotation);
@@ -74,7 +100,5 @@ AActor* UGrabber::GetGrabbableObject()
 		traceParams
 	);
 
-	AActor* hitActor = outHit.GetActor();
-
-	return hitActor;
+	return outHit;
 }

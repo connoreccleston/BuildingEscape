@@ -33,5 +33,5 @@ private:
 	void Grab();
 	void Release();
 
-	AActor* GetGrabbableObject();
+	FHitResult GetGrabbableObject();
 };
