@@ -31,10 +31,18 @@ void UDoorOpener::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if(pressurePlate->IsOverlappingActor(whoOpens))
+	if (pressurePlate->IsOverlappingActor(whoOpens))
+	{
 		GetOwner()->SetActorRotation(openRot);
+		lastOpenTime = GetWorld()->GetTimeSeconds();
+	}
 
-	if(!pressurePlate->IsOverlappingActor(whoOpens))
+	if (GetWorld()->GetTimeSeconds() >= lastOpenTime + closeDelay)
+	{
 		GetOwner()->SetActorRotation(closeRot);
+	}
+
+	//if(!pressurePlate->IsOverlappingActor(whoOpens))
+	//	GetOwner()->SetActorRotation(closeRot);
 }
 

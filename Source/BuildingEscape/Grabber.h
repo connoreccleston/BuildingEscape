@@ -3,17 +3,17 @@
 #pragma once
 
 #include "Components/ActorComponent.h"
-#include "DoorOpener.generated.h"
+#include "Grabber.generated.h"
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
-class BUILDINGESCAPE_API UDoorOpener : public UActorComponent
+class BUILDINGESCAPE_API UGrabber : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
 	// Sets default values for this component's properties
-	UDoorOpener();
+	UGrabber();
 
 protected:
 	// Called when the game starts
@@ -23,21 +23,6 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-private:
-	UPROPERTY(EditAnywhere)
-	float openAngle = 90.0f;
+		
 	
-	UPROPERTY(EditAnywhere)
-	ATriggerVolume* pressurePlate;
-
-	UPROPERTY(EditAnywhere)
-	float closeDelay = 1.0f;
-
-	//UPROPERTY(EditAnywhere)
-	AActor* whoOpens;
-
-	float lastOpenTime;
-
-	FRotator closeRot;
-	FRotator openRot;
 };
