@@ -42,7 +42,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// if phys handle is attached, move the thing we're holding
-	// used to crash on start if player pawn didn't have physics handle, now only crashes when you try to grab because the Grab action is still registered
 	if (physHandle && physHandle->GrabbedComponent)
 	{
 		FVector outLocation;
@@ -61,7 +60,7 @@ void UGrabber::Grab()
 	AActor* hitActor = hitRes.GetActor();
 
 	// if we hit something, attach phys handle
-	if (hitActor)
+	if (hitActor && physHandle)
 	{
 		physHandle->GrabComponentAtLocationWithRotation
 		(
@@ -75,7 +74,8 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
-	physHandle->ReleaseComponent();
+	if (physHandle)
+		physHandle->ReleaseComponent();
 }
 
 FHitResult UGrabber::GetGrabbableObject()

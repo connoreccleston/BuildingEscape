@@ -10,8 +10,6 @@ UDoorOpener::UDoorOpener()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
@@ -20,7 +18,8 @@ void UDoorOpener::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//whoOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	if (!pressurePlate)
+		UE_LOG(LogTemp, Error, TEXT("Pressure plate missing from %s"), *(GetOwner()->GetName()));
 
 	closeRot = GetOwner()->GetActorRotation();
 	openRot = GetOwner()->GetActorRotation().Add(0.0f, openAngle, 0.0f);
@@ -41,14 +40,14 @@ void UDoorOpener::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 	{
 		GetOwner()->SetActorRotation(closeRot);
 	}
-
-	//if(!pressurePlate->IsOverlappingActor(whoOpens))
-	//	GetOwner()->SetActorRotation(closeRot);
 }
 
 float UDoorOpener::TotalMass()
 {
 	float totalMass = 0.0f;
+
+	if (!pressurePlate)
+		return -1.0f;
 
 	// find all overlapping actors, add their masses
 
