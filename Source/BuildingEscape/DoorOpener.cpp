@@ -21,8 +21,8 @@ void UDoorOpener::BeginPlay()
 	if (!pressurePlate)
 		UE_LOG(LogTemp, Error, TEXT("Pressure plate missing from %s"), *(GetOwner()->GetName()));
 
-	closeRot = GetOwner()->GetActorRotation();
-	openRot = GetOwner()->GetActorRotation().Add(0.0f, openAngle, 0.0f);
+	//closeRot = GetOwner()->GetActorRotation();
+	//openRot = GetOwner()->GetActorRotation().Add(0.0f, openAngle, 0.0f);
 }
 
 // Called every frame
@@ -32,13 +32,12 @@ void UDoorOpener::TickComponent(float DeltaTime, ELevelTick TickType, FActorComp
 
 	if (TotalMass() >= massThreshold)
 	{
-		GetOwner()->SetActorRotation(openRot);
-		lastOpenTime = GetWorld()->GetTimeSeconds();
+		//GetOwner()->SetActorRotation(openRot);
+		onOpen.Broadcast();
 	}
-
-	if (GetWorld()->GetTimeSeconds() >= lastOpenTime + closeDelay)
+	else
 	{
-		GetOwner()->SetActorRotation(closeRot);
+		onClose.Broadcast();
 	}
 }
 
